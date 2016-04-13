@@ -1,0 +1,1 @@
+/usr/bin/c++    -O3 -std=c++11    CMakeFiles/ward.dir/Source/main.cpp.o CMakeFiles/ward.dir/Source/aoa_jpeg.cpp.o  -o ward -ljpeg 

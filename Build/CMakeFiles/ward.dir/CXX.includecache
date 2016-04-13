@@ -1,0 +1,22 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/goksu/ward/Header/aoa_jpeg.h
+
+/home/goksu/ward/Source/aoa_jpeg.cpp
+stdio.h
+-
+jpeglib.h
+-
+stdlib.h
+-
+../Header/aoa_jpeg.h
+/home/goksu/ward/Header/aoa_jpeg.h
+
+/home/goksu/ward/Source/main.cpp
+
