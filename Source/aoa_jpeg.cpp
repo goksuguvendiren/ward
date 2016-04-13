@@ -104,8 +104,9 @@ void read_jpeg(const char *filename, UCOLOR **image, int *width, int *height)
 	while (cinfo.output_scanline < cinfo.output_height) {
 		jpeg_read_scanlines(&cinfo, &row_pointer, 1);
 		for (j = 0; j < *width; j++)
-			for (k = 0; k < 3; k++)
+			for (k = 0; k < 3; k++){
 				image[cinfo.output_scanline - 1][j][k] = ((unsigned char)row_pointer[3 * j + k]) / 255.0f;
+			}
 	}
 	jpeg_finish_decompress(&cinfo);
 	fclose(infile);
