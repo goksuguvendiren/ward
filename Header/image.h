@@ -1,6 +1,11 @@
 #ifndef __IMAGE_H__
 #define __IMAGE_H__
 
+#include <string>
+#include "aoa_jpeg.h"
+
+using namespace std;
+
 /*struct Pixel
 {
 	UCOLOR pixel;

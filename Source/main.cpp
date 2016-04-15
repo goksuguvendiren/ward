@@ -1,8 +1,12 @@
 #include <iostream>
 #include <fstream>
+#include <vector>
 #include <ctime>
+#include <dirent.h>
 
-int main()
+using namespace std;
+
+int main(int argc, const char* argv[])
 {
 	clock_t begin = clock();
 
