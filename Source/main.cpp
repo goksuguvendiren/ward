@@ -46,7 +46,5 @@ int main(int argc, const char* argv[])
 	Bitmap b;
 	b.Compute(image);
 
-	Bitmap c = b.XOR(b);
-
 	return 0;
 }
