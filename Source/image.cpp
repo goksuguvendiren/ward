@@ -1,4 +1,5 @@
 #include "../Header/image.h"
+#include <iostream>
 
 Image::Image(string& path)
 {
@@ -6,7 +7,10 @@ Image::Image(string& path)
 
 	read_jpeg_header(path.c_str(), &_width, &_height);
 	prepare();
-	read_jpeg(path.c_str(), _pixels, &_width, &_height);
+	read_jpeg(path.c_str(), _pixels, &_width, &_height, &_medianValue);
+
+	std::cout << _medianValue << std::endl;
+	std::cout << _medianValue / (_width * _height) << std::endl;
 }
 
 void Image::prepare()

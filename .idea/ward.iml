@@ -5,6 +5,7 @@
       <sourceFolder url="file://$MODULE_DIR$/CMakeLists.txt" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Source/aoa_jpeg.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Source/main.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Source/bitmap.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Source/image.cpp" isTestSource="false" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />

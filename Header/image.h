@@ -6,20 +6,6 @@
 
 using namespace std;
 
-/*struct Pixel
-{
-	UCOLOR pixel;
-	Pixel(const UCOLOR& p)
-	{
-		pixel[0] = p[0] * 255;
-		pixel[1] = p[1] * 255;
-		pixel[2] = p[2] * 255;
-	}
-
-	float operator[](int i) { return pixel[i]; }
-};*/
-
-
 class Image
 {
 private:
