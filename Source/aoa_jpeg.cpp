@@ -73,7 +73,7 @@ void read_jpeg_header(const char *filename, int *width, int *height)
 	*height = cinfo.output_height;
 }
 
-void read_jpeg(const char *filename, UCOLOR **image, int *width, int *height, float* med)
+void read_jpeg(const char *filename, UCOLOR **image, int *width, int *height)
 {
 	struct jpeg_decompress_struct cinfo;
 	struct jpeg_error_mgr jerr;
@@ -81,8 +81,6 @@ void read_jpeg(const char *filename, UCOLOR **image, int *width, int *height, fl
 	FILE *infile;
 	JSAMPROW row_pointer; /* pointer to a row */
 	int j, k;
-
-	*med = 0;
 
 	/* create jpeg decompress object */
 	cinfo.err = jpeg_std_error(&jerr);
@@ -108,7 +106,6 @@ void read_jpeg(const char *filename, UCOLOR **image, int *width, int *height, fl
 		for (j = 0; j < *width; j++)
 			for (k = 0; k < 3; k++){
 				image[cinfo.output_scanline - 1][j][k] = ((unsigned char)row_pointer[3 * j + k]) / 255.0f;
-				*med += image[cinfo.output_scanline - 1][j][0];
 			}
 	}
 	jpeg_finish_decompress(&cinfo);

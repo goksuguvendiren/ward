@@ -9,10 +9,14 @@ using std::vector;
 class Bitmap
 {
     int _width, _height;
+    int _ones;
     vector<bool> _bitmapImage;
+    UCOLOR** _bm;
 public:
     Bitmap();
-    void Compute();
+    void Compute(const Image& image);
+    Bitmap XOR(const Bitmap& bitmap) const;
+    int CountOnes() const;
 };
 
 #endif //__BITMAP_H__

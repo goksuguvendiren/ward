@@ -31,7 +31,6 @@ int main(int argc, const char* argv[])
 				string filename = string(ent->d_name);
 				if (filename.find("JPG") == string::npos)
 					continue;
-				cout << filename << endl;
 
 				paths.push_back(path + filename);
 				filenames.push_back(filename);
@@ -45,6 +44,9 @@ int main(int argc, const char* argv[])
 	Image image(paths[0]);
 
 	Bitmap b;
+	b.Compute(image);
+
+	Bitmap c = b.XOR(b);
 
 	return 0;
 }

@@ -7,10 +7,9 @@ Image::Image(string& path)
 
 	read_jpeg_header(path.c_str(), &_width, &_height);
 	prepare();
-	read_jpeg(path.c_str(), _pixels, &_width, &_height, &_medianValue);
+	read_jpeg(path.c_str(), _pixels, &_width, &_height);
 
-	std::cout << _medianValue << std::endl;
-	std::cout << _medianValue / (_width * _height) << std::endl;
+    CalculateMedian();
 }
 
 void Image::prepare()
@@ -19,6 +18,21 @@ void Image::prepare()
 	for(int i = 0; i < _height; i++)
 		_pixels[i] = new UCOLOR[_width];
 }
+
+void Image::CalculateMedian()
+{
+    for (int i = 0; i < _height; i++){
+        for (int j = 0; j < _width; j++){
+            _pixels[i][j][0] *= 255;
+            _pixels[i][j][1] *= 255;
+            _pixels[i][j][2] *= 255;
+            _medianValue += _pixels[i][j][1];
+        }
+    }
+
+    _medianValue /= _width * _height;
+}
+
 Image::~Image()
 {
 	for (int i = 0; i < _height; i++){
