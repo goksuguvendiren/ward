@@ -1,83 +1,50 @@
 #include "../Header/image.h"
 #include <iostream>
+#include <opencv2/core/core.hpp>
+#include <opencv2/imgcodecs.hpp>
+#include <opencv2/imgcodecs/imgcodecs_c.h>
+#include <opencv2/imgproc/types_c.h>
+#include <opencv2/imgproc.hpp>
+#include <opencv2/highgui.hpp>
 
-Image::Image(string& path)
+Image::Image(const string& path)
 {
-	_path = path;
+    _path = path;
+    _pixels = imread(path, CV_LOAD_IMAGE_COLOR);
+    cv::cvtColor(_pixels, _pixels, CV_BGR2GRAY);
 
-	read_jpeg_header(path.c_str(), &_width, &_height);
-	prepare();
-	read_jpeg(path.c_str(), _pixels, &_width, &_height);
+    //namedWindow( "Display window", WINDOW_AUTOSIZE );// Create a window for display.
+    //imshow( "Display window", _pixels);
+
+    _width = _pixels.size().width;
+    _height = _pixels.size().height;
 
     CalculateMedian();
 }
 
-void Image::prepare()
+Image Image::Shrink() const
 {
-	_pixels = new UCOLOR*[_height];
-	for(int i = 0; i < _height; i++)
-		_pixels[i] = new UCOLOR[_width];
+    Image im(_path);
+    Size size(_width/2, _height/2);
+    resize(_pixels, im._pixels, size); //resize image
+
+    im._width /= 2;
+    im._height /= 2;
+
+    im.CalculateMedian();
+
+    return im;
 }
 
 void Image::CalculateMedian()
 {
+    vector<int> medVec;
     for (int i = 0; i < _height; i++){
         for (int j = 0; j < _width; j++){
-            _pixels[i][j][0] *= 255;
-            _pixels[i][j][1] *= 255;
-            _pixels[i][j][2] *= 255;
-            _medianValue += _pixels[i][j][1];
+            medVec.push_back(_pixels.at<uchar>(i, j));
         }
     }
 
-    _medianValue /= _width * _height;
-}
-
-Image::~Image()
-{
-	for (int i = 0; i < _height; i++){
-		delete[] _pixels[i];
-	}
-
-	delete[] _pixels;
-}
-
-Image& Image::operator=(Image& rhs)
-{
-	if (this == &rhs) return *this;
-
-	this->~Image();
-
-	_width = rhs._width;
-	_height = rhs._height;
-	_exposureTime = rhs._exposureTime;
-	_path = rhs._path;
-
-	prepare();
-	for (int i = 0; i < _height; i++){
-		for (int j = 0; j < _width; j++){
-			_pixels[i][j][0] = rhs._pixels[i][j][0];
-			_pixels[i][j][1] = rhs._pixels[i][j][1];
-			_pixels[i][j][2] = rhs._pixels[i][j][2];
-		}
-	}
-
-	return *this;
-}
-
-Image::Image(const Image& rhs)
-{
-	_width = rhs._width;
-	_height = rhs._height;
-	_exposureTime = rhs._exposureTime;
-	_path = rhs._path;
-
-	prepare();
-	for (int i = 0; i < _height; i++){
-		for (int j = 0; j < _width; j++){
-			_pixels[i][j][0] = rhs._pixels[i][j][0];
-			_pixels[i][j][1] = rhs._pixels[i][j][1];
-			_pixels[i][j][2] = rhs._pixels[i][j][2];
-		}
-	}
+    nth_element(medVec.begin(), medVec.begin() + medVec.size() / 2, medVec.end());
+    _medianValue = medVec[medVec.size() / 2];
 }

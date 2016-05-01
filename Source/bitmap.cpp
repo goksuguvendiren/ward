@@ -1,21 +1,23 @@
 #include "../Header/bitmap.h"
 #include "../Header/image.h"
 #include "../Header/aoa_jpeg.h"
+#include <iostream>
 
 using namespace std;
 
 Bitmap::Bitmap()
 {
-    _ones = 0;
 }
 
 Bitmap Bitmap::XOR(const Bitmap& bitmap) const
 {
     Bitmap bm;
+    bm._width = _width;
+    bm._height = _height;
     bm._bitmapImage.resize(_width * _height);
-    for (int i = 0; i < _bitmapImage.size(); i++){
+
+    for (int i = 0; i < bm._bitmapImage.size(); i++){
         bm._bitmapImage[i] = _bitmapImage[i] ^ bitmap._bitmapImage[i];
-        bm._ones += bm._bitmapImage[i];
     }
 
     return bm;
@@ -24,10 +26,11 @@ Bitmap Bitmap::XOR(const Bitmap& bitmap) const
 Bitmap Bitmap::AND(const Bitmap &bitmap) const
 {
     Bitmap bm;
+    bm._width = _width;
+    bm._height = _height;
     bm._bitmapImage.resize(_width * _height);
-    for (int i = 0; i < _bitmapImage.size(); i++){
+    for (int i = 0; i < bm._bitmapImage.size(); i++){
         bm._bitmapImage[i] = _bitmapImage[i] & bitmap._bitmapImage[i];
-        bm._ones += bm._bitmapImage[i];
     }
 
     return bm;
@@ -35,36 +38,67 @@ Bitmap Bitmap::AND(const Bitmap &bitmap) const
 
 int Bitmap::CountOnes() const
 {
-    return _ones;
+    int sum = 0;
+    for (int i = 0; i < _width * _height; i++){
+        sum += _bitmapImage[i];
+    }
+
+    return sum;
 }
 
-void Bitmap::Shift(int x, int y)
+Bitmap Bitmap::Shift(int x, int y)
 {
-    _width = 10;
-    if (y == -1){
-        for (int i = 0; i < _width; i++){
-            auto it = _bitmapImage.begin();
-            _bitmapImage.erase(it);
-            _bitmapImage.push_back(0);
+    Bitmap bm;
+    bm._height = _height;
+    bm._width = _width;
+    bm._bitmapImage.resize(_width * _height);
+
+    int total = y * _width + x;
+
+    if (total < 0){
+        total *= -1;
+        for (int i = total; i < _width * _height; i++){
+            if ((x < 0 && ((i - total) % _width) > _width + x) || (x > 0 && ((i - total) % _width) < x) || (y > 0 && (i - total) < _width * y) || (y < 0 && (i - total) > _width * (_height - y))){
+                bm._bitmapImage[i - total] = false;
+                continue;
+            }
+
+            bm._bitmapImage[i - total] = _bitmapImage[i];
+        }
+        for (int i = 0; i < total; i++){
+            bm._bitmapImage[i + _width * _height - total] = false;
         }
     }
-    else if (y == 1){
-        for (int i = 0; i < _width; i++){
-            _bitmapImage.push_front(0);
-            auto it = _bitmapImage.end() - 1;
-            _bitmapImage.erase(it);
+    else{
+        for (int i = 0; i < total; i++){
+            bm._bitmapImage[i] = false;
+        }
+        for (int i = total; i < _width * _height; i++){
+            if ((x < 0 && (i % _width) > _width + x) || (x > 0 && (i % _width) < x) || (y > 0 && i < _width * y) || (y < 0 && i > _width * (_height - y))){
+                bm._bitmapImage[i - total] = false;
+                continue;
+            }
+
+            bm._bitmapImage[i] = _bitmapImage[i - total];
         }
     }
 
-    if (x == -1){
-        auto it = _bitmapImage.begin();
-        _bitmapImage.erase(it);
-        _bitmapImage.push_back(0);
-    }
-    else if (x == 1){
-        auto it = _bitmapImage.end() - 1;
-        _bitmapImage.erase(it);
-        _bitmapImage.push_front(0);
+    return bm;
+}
+
+void Bitmap::ComputeEx(const Image& image)
+{
+    _width = image.Width();
+    _height = image.Height();
+    for(int i = 0; i < _height; i++){
+        for(int j = 0; j < _width; j++){
+            if (image.Value(i, j) > image.Med() - 4 && image.Value(i, j) < image.Med() + 4){
+                _bitmapImage.push_back(false);
+            }
+            else {
+                _bitmapImage.push_back(true);
+            }
+        }
     }
 }
 
@@ -74,9 +108,7 @@ void Bitmap::Compute(const Image& image)
     _height = image.Height();
     for(int i = 0; i < _height; i++){
         for(int j = 0; j < _width; j++){
-            _bitmapImage.push_back(image.Green(i, j) > image.Med());
-            _ones += image.Green(i, j) > image.Med() ? 1 : 0;
+            _bitmapImage.push_back(image.Value(i, j) > image.Med());
         }
     }
 }
-

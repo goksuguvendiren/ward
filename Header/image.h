@@ -2,9 +2,11 @@
 #define __IMAGE_H__
 
 #include <string>
+#include <opencv2/core/core.hpp>
 #include "aoa_jpeg.h"
 
 using namespace std;
+using namespace cv;
 
 class Image
 {
@@ -13,22 +15,18 @@ private:
 	float _exposureTime;
 	float _medianValue;
 
-	UCOLOR** _pixels;
-	//vector<Pixel> _realPixels;
-	//void loadRealPixels();
+	Mat _pixels;
+
 	void prepare();
 	string _path;
 
 public:
-	Image(string& path);
-	Image(const Image& rhs);
-	Image& operator=(Image& rhs);
-	~Image();
+	Image(const string& path);
 
-	void Shrink();
+	Image Shrink() const;
     float Med() const { return _medianValue; }
 
-	float Green(int i, int j) const { return _pixels[i][j][1]; }
+	uchar Value(int i, int j) const { return _pixels.at<uchar>(i, j); }
 	int Width() const { return _width; }
 	int Height() const { return _height; }
     void CalculateMedian();
